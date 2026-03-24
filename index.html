@@ -1,155 +1,277 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" x-data="peonyApp()">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peony Lenses | الفخامة المطلقة</title>
+    <title>إمبراطورية بيوني | Peony Empire</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         [x-cloak] { display: none !important; }
-        body { font-family: 'Tajawal', sans-serif; background-color: #fdfaf9; background-image: url('frame.png'); background-attachment: fixed; scroll-behavior: smooth; }
-        .victorian-text { font-family: 'Playfair Display', serif; font-style: italic; }
-        .gold-gradient { background: linear-gradient(135deg, #801b2d 0%, #a61e31 100%); }
-        .spec-card { border: 1px solid #eee; border-radius: 12px; background: #fffafb; padding: 10px; text-align: center; }
-        .magic-item { position: fixed; pointer-events: none; z-index: 9999; animation: flyOut 1.5s ease-out forwards; font-size: 24px; }
-        @keyframes flyOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: translateY(-200px) rotate(360deg); } }
-        /* تأثير البريق الذهبي */
-        .sparkle { position: absolute; background: gold; border-radius: 50%; pointer-events: none; animation: shine 1s linear forwards; }
-        @keyframes shine { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+        :root { --gold: #d4af37; --royal-red: #801b2d; --lace-bg: #fdf6f7; }
+        
+        body { 
+            font-family: 'Amiri', serif; 
+            background-color: var(--lace-bg); 
+            color: var(--royal-red);
+            background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+        }
+
+        .victorian-border { 
+            border: 15px solid transparent; 
+            border-image: url('https://i.pinimg.com/originals/f1/44/2f/f1442f9a7102f5a09b478d102e5b8d2a.png') 30 round; 
+        }
+
+        /* محرك الجزيئات السحرية */
+        .particle { position: fixed; pointer-events: none; z-index: 9999; animation: fly 2s linear forwards; }
+        @keyframes fly { 
+            0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; } 
+            100% { transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(0); opacity: 0; } 
+        }
+
+        .shine { position: relative; overflow: hidden; }
+        .shine::after { 
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; 
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent); 
+            transform: rotate(45deg); animation: shine 3s infinite; 
+        }
+        @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
     </style>
 </head>
-<body class="antialiased" @mousemove="spawnSparkle($event)">
+<body x-data="peonyApp()">
 
-    <section class="min-h-screen flex items-center justify-center p-6 relative">
-        <div class="max-w-xl w-full text-center space-y-8 bg-white/60 backdrop-blur-xl p-12 rounded-[60px] shadow-2xl border border-white">
-            <div class="relative w-64 h-64 mx-auto group cursor-pointer" @click="triggerMagic($event)">
-                <img src="image.png" class="w-full h-full object-cover rounded-full border-8 border-white shadow-2xl transition-transform group-hover:scale-105">
-                <div class="absolute -bottom-4 right-0 bg-[#801b2d] text-white p-3 rounded-full shadow-lg">✨</div>
+    <header class="relative bg-[url('https://i.ibb.co/90761d5c-89c1-4f07-addd-b543e2b7ca63/image.png')] bg-cover bg-center py-12 border-b-8 border-gold shadow-2xl">
+        <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px]"></div>
+        <div class="relative z-10 container mx-auto px-4 text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-8 drop-shadow-lg text-royal-red">احتفالية عروض الإمبراطورية</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div class="bg-white/90 p-6 rounded-xl border-2 border-gold shadow-lg">
+                    <h3 class="text-2xl font-bold">الأناقة الملكية</h3>
+                    <p class="text-3xl font-bold my-2">25,000 د.ع</p>
+                    <span class="bg-gold/20 text-xs px-3 py-1 rounded-full">🎁 حافظة مجانية</span>
+                </div>
+                <div class="bg-white p-6 rounded-xl border-4 border-royal-red shadow-2xl scale-105 relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-royal-red text-white px-6 py-1 text-xs rounded-full">الأكثر طلباً</div>
+                    <h3 class="text-2xl font-bold">التوأم الساحر</h3>
+                    <p class="text-4xl font-bold my-2 text-green-700">40,000 د.ع</p>
+                    <span class="text-sm font-bold">وفرِي 10,000 د.ع + ٢ حافظة</span>
+                </div>
+                <div class="bg-white/90 p-6 rounded-xl border-2 border-gold shadow-lg">
+                    <h3 class="text-2xl font-bold">خماسية البيوني</h3>
+                    <p class="text-3xl font-bold my-2 text-green-700">75,000 د.ع</p>
+                    <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs">🎁 سائل عدسات + ٥ حافظات</span>
+                </div>
             </div>
-            <div class="space-y-4">
-                <p class="text-[#5c3d2e] tracking-[0.4em] text-sm font-bold">❖ <span class="victorian-text">PEONY LENSES</span> ❖</p>
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">نظرة تأسر العالم<br><span class="text-[#801b2d]">برقة الورد وبريق الذهب</span></h1>
-                <p class="victorian-text text-xl text-[#a67c00]">Captivating Glances, Timeless Elegance</p>
+            <p class="mt-6 font-bold text-red-700 animate-pulse text-xl">⚠️ سائل العدسات محدود جداً - الأولوية لأسبقية الطلب!</p>
+        </div>
+    </header>
+
+    <section class="container mx-auto my-12 px-4">
+        <div class="bg-white victorian-border p-8 md:p-12 text-center shadow-2xl max-w-4xl mx-auto rounded-3xl">
+            <h2 class="text-4xl font-bold mb-4">🕊️ مستشار الجمال الذكي</h2>
+            <p class="mb-8 italic text-gray-600">اكتشفي العدسة التي تعانق سحر ملامحكِ (أندرتون، وجه، شعر)..</p>
+            
+            <div x-show="quizStep <= 4">
+                <div x-show="quizStep === 1" x-transition>
+                    <h4 class="text-2xl mb-6">1. ما هو لون عروق معصمكِ تحت ضوء الشمس؟</h4>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button @click="quizData.tone='warm'; quizStep++" class="px-8 py-3 bg-green-50 rounded-full border-2 border-gold hover:bg-gold hover:text-white transition">خضراء (بشرة دافئة)</button>
+                        <button @click="quizData.tone='cool'; quizStep++" class="px-8 py-3 bg-blue-50 rounded-full border-2 border-gold hover:bg-gold hover:text-white transition">زرقاء/بنفسجية (بشرة باردة)</button>
+                    </div>
+                </div>
+                
+                <div x-show="quizStep === 2" x-cloak x-transition>
+                    <h4 class="text-2xl mb-6">2. أي المجوهرات تمنح وجهكِ إشراقاً أكبر؟</h4>
+                    <div class="flex justify-center gap-4">
+                        <button @click="quizStep++" class="px-8 py-3 border-2 border-gold rounded-xl">الذهب الأصفر ✨</button>
+                        <button @click="quizStep++" class="px-8 py-3 border-2 border-gold rounded-xl">الفضة/الألماس 💎</button>
+                    </div>
+                </div>
+
+                <div x-show="quizStep === 3" x-cloak x-transition>
+                    <h4 class="text-2xl mb-6">3. ما هو شكل وجهكِ؟</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button @click="quizStep++" class="p-4 border rounded-xl hover:bg-gold/10">دائري</button>
+                        <button @click="quizStep++" class="p-4 border rounded-xl hover:bg-gold/10">بيضاوي</button>
+                        <button @click="quizStep++" class="p-4 border rounded-xl hover:bg-gold/10">قلب</button>
+                        <button @click="quizStep++" class="p-4 border rounded-xl hover:bg-gold/10">مربع</button>
+                    </div>
+                </div>
+
+                <div x-show="quizStep === 4" x-cloak x-transition>
+                    <h4 class="text-2xl mb-6">4. لون شعركِ الغالب؟</h4>
+                    <div class="flex justify-center gap-4">
+                        <button @click="calculateResult()" class="px-10 py-3 bg-black text-white rounded-full">غامق</button>
+                        <button @click="calculateResult()" class="px-10 py-3 bg-yellow-600 text-white rounded-full">فاتح</button>
+                    </div>
+                </div>
             </div>
-            <p class="text-lg text-gray-700 leading-relaxed italic">"تحتفظ بروحكِ وتضيف بريقاً لا يُنسى"</p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <button @click="scrollTo('collection')" class="gold-gradient text-white px-10 py-4 rounded-full font-bold shadow-xl hover:opacity-90 transition">اكتشفي المجموعة ❖</button>
-                <a href="https://wa.me/9647706008339" class="border-2 border-[#801b2d] text-[#801b2d] px-10 py-4 rounded-full font-bold hover:bg-[#801b2d] hover:text-white transition">طلب واتساب</a>
+
+            <div x-show="quizStep === 5" x-cloak class="py-6">
+                <h3 class="text-3xl font-bold text-green-700 mb-4">لقد وجدنا سحركِ!</h3>
+                <div class="p-8 bg-gold/5 border-2 border-dashed border-gold rounded-2xl inline-block">
+                    <p class="text-5xl font-bold text-royal-red mb-2" x-text="quizResult.name"></p>
+                    <p class="text-lg italic text-gray-700" x-text="quizResult.reason"></p>
+                </div>
+                <div class="mt-8 flex flex-col items-center gap-4">
+                    <button @click="shareOnWhatsApp()" class="bg-green-600 text-white px-8 py-3 rounded-full shadow-lg hover:scale-105 transition flex items-center gap-2">
+                        مشاركة النتيجة مع صديقاتي 🕊️
+                    </button>
+                    <button @click="quizStep = 1" class="text-sm underline text-gray-400">إعادة الاختبار</button>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="collection" class="py-20 container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center mb-12">ألوان <span class="text-[#801b2d]">تتحوّل</span> معكِ</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
-            <template x-for="product in products" :key="product.id">
-                <div @click="openModal(product, $event)" class="bg-white rounded-[40px] overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-2xl transition-all group">
-                    <div class="aspect-square bg-[#0a0a0a] relative flex items-center justify-center p-8">
-                        <span class="absolute top-4 right-4 bg-[#801b2d] text-white text-[10px] px-3 py-1 rounded-full z-10" x-text="product.status === 'available' ? '❖ متوفر' : 'قريباً'"></span>
-                        <div class="w-full h-full rounded-full transition-transform group-hover:scale-110" :style="`background: radial-gradient(circle at 35% 35%, #fff 0%, ${product.color} 70%, #000 100%); box-shadow: 0 0 40px ${product.color}33;` "></div>
+    <main class="container mx-auto px-4 py-10">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+            <h2 class="text-4xl font-bold border-b-4 border-gold pb-2">خزانة الجمال (43 لوناً)</h2>
+            <div class="relative w-full md:w-96">
+                <input type="text" x-model="search" placeholder="ابحثي بالرقم أو الاسم..." class="w-full p-4 rounded-full border-2 border-gold outline-none focus:ring-4 focus:ring-gold/20 transition">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <template x-for="product in filteredProducts()" :key="product.id">
+                <div class="bg-white p-5 rounded-3xl shadow-lg hover:shadow-2xl transition-all group cursor-pointer border border-transparent hover:border-gold" @click="openModal(product)">
+                    <div class="aspect-square overflow-hidden rounded-2xl relative">
+                        <img :src="product.images[0]" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <template x-if="product.id > 32">
+                            <span class="absolute top-3 left-3 bg-gold text-white text-[10px] px-3 py-1 rounded-full animate-bounce">جديد ✨</span>
+                        </template>
                     </div>
-                    <div class="p-6 text-center">
-                        <h3 class="font-bold text-xl" x-text="product.name"></h3>
-                        <p class="victorian-text text-[#a67c00]" x-text="product.enName"></p>
+                    <div class="mt-5 text-center">
+                        <h3 class="text-xl font-bold text-royal-red" x-text="product.name"></h3>
+                        <p class="text-green-700 font-bold text-lg" x-text="product.price"></p>
+                        <button class="mt-3 w-full py-2 bg-royal-red/5 text-royal-red rounded-xl group-hover:bg-royal-red group-hover:text-white transition">استكشفي التفاصيل</button>
                     </div>
                 </div>
             </template>
         </div>
-    </section>
+    </main>
 
-    <div x-show="showModal" x-cloak class="fixed inset-0 z-[5000] flex items-end md:items-center justify-center bg-black/70 backdrop-blur-md p-4">
-        <div @click.away="showModal = false" class="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
-            <div class="h-64 relative">
-                <img :src="selectedProduct.img || 'image.png'" class="w-full h-full object-cover">
-                <button @click="showModal = false" class="absolute top-6 left-6 bg-white/20 backdrop-blur-lg text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">✕</button>
-            </div>
+    <div x-show="showModal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" x-cloak x-transition>
+        <div class="bg-white w-full max-w-5xl rounded-[40px] overflow-hidden relative flex flex-col md:flex-row shadow-2xl border-4 border-gold" @click.away="showModal = false">
+            <button @click="showModal = false" class="absolute top-6 left-6 text-4xl text-royal-red z-50">&times;</button>
             
-            <div class="p-8 space-y-6">
-                <div class="text-center">
-                    <h2 class="text-2xl font-bold" x-text="`Fresh Lady — ${selectedProduct.name}`"></h2>
-                    <p class="victorian-text text-[#a67c00]" x-text="selectedProduct.series"></p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="spec-card">
-                        <span class="text-[10px] text-gray-400 block uppercase">Water Content</span>
-                        <span class="font-bold text-[#801b2d]">42% - سنوي</span>
+            <div class="md:w-1/2 bg-gray-100 flex items-center justify-center relative h-[400px] md:h-auto">
+                <img :src="activeItem.images[activeImgIdx]" class="w-full h-full object-cover">
+                <template x-if="activeItem.images.length > 1">
+                    <div class="absolute bottom-6 flex gap-3">
+                        <template x-for="(img, i) in activeItem.images">
+                            <button @click="activeImgIdx = i" class="w-3 h-3 rounded-full transition-all" :class="activeImgIdx === i ? 'bg-royal-red w-8' : 'bg-gray-400'"></button>
+                        </template>
                     </div>
-                    <div class="spec-card">
-                        <span class="text-[10px] text-gray-400 block uppercase">Dimensions</span>
-                        <span class="font-bold">14.2mm / 8.6mm</span>
-                    </div>
+                </template>
+            </div>
+
+            <div class="md:w-1/2 p-10 flex flex-col justify-center">
+                <span class="text-gold font-bold text-sm tracking-widest uppercase mb-2" x-text="'العدسة رقم ' + activeItem.id"></span>
+                <h2 class="text-5xl font-bold mb-4 text-royal-red" x-text="activeItem.name"></h2>
+                <p class="text-xl text-gray-600 mb-8 leading-relaxed" x-text="activeItem.desc"></p>
+                
+                <div class="flex items-center gap-6 mb-10">
+                    <span class="text-4xl font-bold text-green-700" x-text="activeItem.price"></span>
+                    <div class="text-xs text-gray-400 border-r pr-4">SKU: <span x-text="activeItem.sku"></span></div>
                 </div>
 
-                <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex gap-1">
-                            <span class="bg-[#3b5998] text-white text-[9px] px-2 py-0.5 rounded">ISO</span>
-                            <span class="bg-[#3b5998] text-white text-[9px] px-2 py-0.5 rounded">FDA</span>
-                        </div>
-                        <span class="text-xs font-bold text-[#3b5998]">❖ الشهادات والمميزات</span>
-                    </div>
-                    <ul class="text-[11px] space-y-1.5 text-right text-gray-600">
-                        <li>☀️ حجب UV - حماية UVA/UVB كاملة</li>
-                        <li>💧 ترطيب طوال اليوم - محتوى مائي 42%</li>
-                        <li>🫧 سمك 0.08mm - لا إحساس بجسم غريب</li>
-                    </ul>
-                </div>
-
-                <div class="flex justify-center gap-2">
-                    <span class="bg-pink-50 text-[#801b2d] px-4 py-1 rounded-full text-[10px] font-bold">💍 أفراح</span>
-                    <span class="bg-blue-50 text-blue-700 px-4 py-1 rounded-full text-[10px] font-bold">📸 تصوير</span>
-                </div>
-
-                <a :href="`https://wa.me/9647706008339?text=أريد طلب عدسة: ${selectedProduct.name}`" class="gold-gradient flex items-center justify-center gap-3 w-full text-white py-5 rounded-2xl font-bold text-lg shadow-lg">
-                    <span>🛒 طلب عبر واتساب</span>
-                </a>
-
-                <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <button @click="like(selectedProduct)" class="flex items-center gap-2 transition active:scale-90">
-                        <span :class="selectedProduct.liked ? 'text-red-500' : 'text-gray-300'" class="text-xl">❤️</span>
-                        <span class="text-sm font-bold" x-text="`أعجبني ${selectedProduct.likes}`"></span>
-                    </button>
-                </div>
+                <button @click="triggerMagic($event)" class="shine w-full bg-royal-red text-white py-5 rounded-2xl text-2xl font-bold shadow-2xl hover:bg-red-900 transition-all">إضافة لسلة الجمال ✨</button>
             </div>
         </div>
     </div>
 
+    <footer class="bg-white border-t-8 border-gold py-16 px-4 mt-20">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h3 class="text-4xl font-bold mb-10">✨ ميثاق الثقة الملكي ✨</h3>
+            
+            <div class="bg-red-50 border-4 border-red-200 p-8 rounded-[30px] mb-12 relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 text-red-100 text-9xl font-bold opacity-20">!</div>
+                <p class="text-3xl text-red-700 font-extrabold mb-4">تنبيه ملكي هام:</p>
+                <p class="text-2xl text-red-800 font-black leading-tight">
+                    قطعيــــاً: <span class="underline decoration-4">لا نستلم أو نستبدل أي عدسة تم فتح غلافها نهائياً.</span><br>
+                    <span class="text-lg font-bold mt-4 block text-gray-600">يرجى التأكد من اللون من خلال العبوة الشفافة قبل كسر الختم الصحي.</span>
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 text-right text-gray-700">
+                <div class="p-6 bg-lace-bg rounded-2xl border-r-4 border-gold">
+                    <p class="font-bold mb-2">● الاستبدال:</p>
+                    <p>خلال 24 ساعة فقط وبشرط الحالة الأصلية (مغلقة تماماً).</p>
+                </div>
+                <div class="p-6 bg-lace-bg rounded-2xl border-r-4 border-gold">
+                    <p class="font-bold mb-2">● العيوب المصنعية:</p>
+                    <p>نحن نضمن جودة "بيوني"، وفي حال وجود خلل يتم الاستبدال فوراً.</p>
+                </div>
+            </div>
+            
+            <p class="mt-16 text-gold font-bold text-2xl italic">إمبراطورية بيوني - دليلكِ لعالم السحر والجمال</p>
+        </div>
+    </footer>
+
     <script>
         function peonyApp() {
             return {
+                search: '',
                 showModal: false,
-                selectedProduct: {},
+                activeItem: { images: [] },
+                activeImgIdx: 0,
+                quizStep: 1,
+                quizData: { tone: '' },
+                quizResult: { name: '', reason: '' },
+                
+                // عينة تمثل الـ 43 عدسة
                 products: [
-                    { id: 1, name: 'أزرق رمادي', enName: 'Blue Gray', series: 'Blue Gray Series • Hydrogel', color: '#5f7d95', likes: 15, liked: false, status: 'available' },
-                    { id: 2, name: 'أزرق الشفق', enName: 'Twilight Blue', series: 'Twilight Series • Hydrogel', color: '#3b82f6', likes: 24, liked: false, status: 'available' },
-                    { id: 3, name: 'روز كوارتز', enName: 'Rose Quartz', series: 'Rose Series • Hydrogel', color: '#d44a7a', likes: 19, liked: false, status: 'available' }
+                    { id: 1, name: 'أوكر (1)', sku: 'SB230921', price: '25,000 د.ع', images: ['img1.jpg'], desc: 'لمسة عسلية طبيعية تذوب في عينيكِ.' },
+                    { id: 33, name: 'رمادي لؤلؤي (33)', sku: 'SB23092687', price: '25,000 د.ع', images: ['img33.jpg', 'img33_2.jpg'], desc: 'بريق اللؤلؤ الصافي لنظرة ملكية.' },
+                    { id: 34, name: 'عسلي مضيء (34)', sku: 'SB24062006', price: '25,000 د.ع', images: ['img34.jpg'], desc: 'إشراقة الشمس في عينيكِ.' },
+                    { id: 43, name: 'كريستال بيوني (43)', sku: 'SB23103197', price: '25,000 د.ع', images: ['img43.jpg', 'img43_2.jpg'], desc: 'نقاء الكريستال المطلق، مسك ختام مجموعتنا.' }
                 ],
-                scrollTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); },
-                openModal(p, e) { this.selectedProduct = p; this.showModal = true; this.triggerMagic(e); },
-                like(p) { p.liked = !p.liked; p.liked ? p.likes++ : p.likes--; },
-                spawnSparkle(e) {
-                    const s = document.createElement('div');
-                    s.className = 'sparkle';
-                    s.style.left = e.pageX + 'px'; s.style.top = e.pageY + 'px';
-                    const size = Math.random() * 4 + 'px';
-                    s.style.width = size; s.style.height = size;
-                    document.body.appendChild(s);
-                    setTimeout(() => s.remove(), 1000);
+
+                filteredProducts() {
+                    return this.products.filter(p => p.name.includes(this.search) || p.id.toString() === this.search);
                 },
-                triggerMagic(e) {
-                    const icons = ['❤️', '🕊️', '✨', '🌸', '🐦', '💖'];
-                    for(let i=0; i<15; i++) {
-                        const h = document.createElement('div');
-                        h.innerHTML = icons[Math.floor(Math.random() * icons.length)];
-                        h.className = 'magic-item';
-                        h.style.left = e.clientX + 'px'; h.style.top = e.clientY + 'px';
-                        h.style.setProperty('--x', (Math.random() * 400 - 200) + 'px');
-                        document.body.appendChild(h);
-                        setTimeout(() => h.remove(), 1500);
+
+                openModal(product) {
+                    this.activeItem = product;
+                    this.activeImgIdx = 0;
+                    this.showModal = true;
+                },
+
+                calculateResult() {
+                    // منطق الأندرتون الموثق
+                    if(this.quizData.tone === 'warm') {
+                        this.quizResult = { name: 'عسلي مضيء (34)', reason: 'الأندرتون الدافئ يبرز بجمال فائق مع الدرجات الذهبية والعسلية.' };
+                    } else {
+                        this.quizResult = { name: 'كريستال بيوني (43)', reason: 'الأندرتون البارد يحتاج لنقاء الكريستال والدرجات الثلجية لإشراق الوجه.' };
                     }
+                    this.quizStep = 5;
+                },
+
+                triggerMagic(e) {
+                    const icons = ['🌸', '🕊️', '🦋', '✨', '💎'];
+                    for (let i = 0; i < 25; i++) {
+                        const p = document.createElement('div');
+                        p.className = 'particle';
+                        p.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                        p.style.left = e.clientX + 'px';
+                        p.style.top = e.clientY + 'px';
+                        p.style.fontSize = Math.random() * 20 + 20 + 'px';
+                        const x = (Math.random() - 0.5) * 600;
+                        const y = (Math.random() - 0.5) * 600;
+                        p.style.setProperty('--x', `${x}px`);
+                        p.style.setProperty('--y', `${y}px`);
+                        p.style.setProperty('--r', `${Math.random() * 720}deg`);
+                        document.body.appendChild(p);
+                        setTimeout(() => p.remove(), 2000);
+                    }
+                },
+
+                shareOnWhatsApp() {
+                    const msg = `اكتشفت سحري الخاص في إمبراطورية بيوني! نتيجتي هي: ${this.quizResult.name}. جربي الاختبار واكتشفي عدساتكِ المثالية! ✨`;
+                    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                 }
             }
         }
