@@ -3,70 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عدسات بيوني | Peony Lenses</title>
+    <title>Peony Lenses | الفخامة المطلقة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Tajawal', sans-serif;
-            background-image: url('image.png'); /* خلفية العصافير */
-            background-attachment: fixed; background-size: cover; background-position: center;
-        }
-        .lens-card { 
-            background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('frame.png'); /* إطار الورود */
-            background-size: cover; border: 1px solid #a67c00; border-radius: 40px; backdrop-filter: blur(8px);
-        }
-        .heart-particle { position: fixed; pointer-events: none; animation: fly 1s ease-out forwards; z-index: 100; font-size: 24px; }
-        @keyframes fly { 0% { opacity: 1; transform: scale(1) translateY(0); } 100% { opacity: 0; transform: scale(0) translateY(-100px); } }
+        [x-cloak] { display: none !important; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #fdfaf9; background-image: url('frame.png'); background-attachment: fixed; scroll-behavior: smooth; }
+        .victorian-text { font-family: 'Playfair Display', serif; font-style: italic; }
+        .gold-gradient { background: linear-gradient(135deg, #801b2d 0%, #a61e31 100%); }
+        .spec-card { border: 1px solid #eee; border-radius: 12px; background: #fffafb; padding: 10px; text-align: center; }
+        .magic-item { position: fixed; pointer-events: none; z-index: 9999; animation: flyOut 1.5s ease-out forwards; font-size: 24px; }
+        @keyframes flyOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: translateY(-200px) rotate(360deg); } }
+        /* تأثير البريق الذهبي */
+        .sparkle { position: absolute; background: gold; border-radius: 50%; pointer-events: none; animation: shine 1s linear forwards; }
+        @keyframes shine { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
     </style>
 </head>
-<body class="antialiased text-gray-800">
+<body class="antialiased" @mousemove="spawnSparkle($event)">
 
-    <div x-show="showToast" x-transition class="fixed top-10 left-1/2 -translate-x-1/2 z-50 bg-black/80 text-white px-8 py-4 rounded-full border border-[#a67c00] text-sm font-bold shadow-2xl">
-        <span x-text="toastMessage"></span>
-    </div>
+    <section class="min-h-screen flex items-center justify-center p-6 relative">
+        <div class="max-w-xl w-full text-center space-y-8 bg-white/60 backdrop-blur-xl p-12 rounded-[60px] shadow-2xl border border-white">
+            <div class="relative w-64 h-64 mx-auto group cursor-pointer" @click="triggerMagic($event)">
+                <img src="image.png" class="w-full h-full object-cover rounded-full border-8 border-white shadow-2xl transition-transform group-hover:scale-105">
+                <div class="absolute -bottom-4 right-0 bg-[#801b2d] text-white p-3 rounded-full shadow-lg">✨</div>
+            </div>
+            <div class="space-y-4">
+                <p class="text-[#5c3d2e] tracking-[0.4em] text-sm font-bold">❖ <span class="victorian-text">PEONY LENSES</span> ❖</p>
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">نظرة تأسر العالم<br><span class="text-[#801b2d]">برقة الورد وبريق الذهب</span></h1>
+                <p class="victorian-text text-xl text-[#a67c00]">Captivating Glances, Timeless Elegance</p>
+            </div>
+            <p class="text-lg text-gray-700 leading-relaxed italic">"تحتفظ بروحكِ وتضيف بريقاً لا يُنسى"</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <button @click="scrollTo('collection')" class="gold-gradient text-white px-10 py-4 rounded-full font-bold shadow-xl hover:opacity-90 transition">اكتشفي المجموعة ❖</button>
+                <a href="https://wa.me/9647706008339" class="border-2 border-[#801b2d] text-[#801b2d] px-10 py-4 rounded-full font-bold hover:bg-[#801b2d] hover:text-white transition">طلب واتساب</a>
+            </div>
+        </div>
+    </section>
 
-    <header class="py-20 text-center">
-        <h1 class="text-4xl font-bold mb-2">نظرة تأسر العالم</h1>
-        <h2 class="text-[#a67c00] text-2xl font-bold tracking-widest px-4">برقة الورد وبريق الذهب</h2>
-    </header>
+    <section id="collection" class="py-20 container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center mb-12">ألوان <span class="text-[#801b2d]">تتحوّل</span> معكِ</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <template x-for="product in products" :key="product.id">
+                <div @click="openModal(product, $event)" class="bg-white rounded-[40px] overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-2xl transition-all group">
+                    <div class="aspect-square bg-[#0a0a0a] relative flex items-center justify-center p-8">
+                        <span class="absolute top-4 right-4 bg-[#801b2d] text-white text-[10px] px-3 py-1 rounded-full z-10" x-text="product.status === 'available' ? '❖ متوفر' : 'قريباً'"></span>
+                        <div class="w-full h-full rounded-full transition-transform group-hover:scale-110" :style="`background: radial-gradient(circle at 35% 35%, #fff 0%, ${product.color} 70%, #000 100%); box-shadow: 0 0 40px ${product.color}33;` "></div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="font-bold text-xl" x-text="product.name"></h3>
+                        <p class="victorian-text text-[#a67c00]" x-text="product.enName"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
 
-    <main class="container mx-auto px-6 pb-24 grid grid-cols-1 md:grid-cols-2 gap-12">
-        <template x-for="product in products">
-            <div class="lens-card p-8 shadow-2xl relative transition-transform hover:scale-[1.02]">
-                <div class="h-80 rounded-[35px] overflow-hidden mb-6 border-4 border-white relative shadow-lg">
-                    <img :src="product.img" class="w-full h-full object-cover">
-                    <button @click="triggerHearts($event); toggleWish(product)" class="absolute top-4 left-4 bg-white/90 p-4 rounded-full shadow-md">
-                        <svg class="w-6 h-6" :class="product.liked ? 'text-red-500' : 'text-gray-300'" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <div x-show="showModal" x-cloak class="fixed inset-0 z-[5000] flex items-end md:items-center justify-center bg-black/70 backdrop-blur-md p-4">
+        <div @click.away="showModal = false" class="bg-white w-full max-w-lg rounded-[45px] overflow-hidden shadow-2xl relative">
+            <div class="h-64 relative">
+                <img :src="selectedProduct.img || 'image.png'" class="w-full h-full object-cover">
+                <button @click="showModal = false" class="absolute top-6 left-6 bg-white/20 backdrop-blur-lg text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">✕</button>
+            </div>
+            
+            <div class="p-8 space-y-6">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold" x-text="`Fresh Lady — ${selectedProduct.name}`"></h2>
+                    <p class="victorian-text text-[#a67c00]" x-text="selectedProduct.series"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="spec-card">
+                        <span class="text-[10px] text-gray-400 block uppercase">Water Content</span>
+                        <span class="font-bold text-[#801b2d]">42% - سنوي</span>
+                    </div>
+                    <div class="spec-card">
+                        <span class="text-[10px] text-gray-400 block uppercase">Dimensions</span>
+                        <span class="font-bold">14.2mm / 8.6mm</span>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex gap-1">
+                            <span class="bg-[#3b5998] text-white text-[9px] px-2 py-0.5 rounded">ISO</span>
+                            <span class="bg-[#3b5998] text-white text-[9px] px-2 py-0.5 rounded">FDA</span>
+                        </div>
+                        <span class="text-xs font-bold text-[#3b5998]">❖ الشهادات والمميزات</span>
+                    </div>
+                    <ul class="text-[11px] space-y-1.5 text-right text-gray-600">
+                        <li>☀️ حجب UV - حماية UVA/UVB كاملة</li>
+                        <li>💧 ترطيب طوال اليوم - محتوى مائي 42%</li>
+                        <li>🫧 سمك 0.08mm - لا إحساس بجسم غريب</li>
+                    </ul>
+                </div>
+
+                <div class="flex justify-center gap-2">
+                    <span class="bg-pink-50 text-[#801b2d] px-4 py-1 rounded-full text-[10px] font-bold">💍 أفراح</span>
+                    <span class="bg-blue-50 text-blue-700 px-4 py-1 rounded-full text-[10px] font-bold">📸 تصوير</span>
+                </div>
+
+                <a :href="`https://wa.me/9647706008339?text=أريد طلب عدسة: ${selectedProduct.name}`" class="gold-gradient flex items-center justify-center gap-3 w-full text-white py-5 rounded-2xl font-bold text-lg shadow-lg">
+                    <span>🛒 طلب عبر واتساب</span>
+                </a>
+
+                <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                    <button @click="like(selectedProduct)" class="flex items-center gap-2 transition active:scale-90">
+                        <span :class="selectedProduct.liked ? 'text-red-500' : 'text-gray-300'" class="text-xl">❤️</span>
+                        <span class="text-sm font-bold" x-text="`أعجبني ${selectedProduct.likes}`"></span>
                     </button>
                 </div>
-                <h3 x-text="product.name" class="text-2xl font-bold text-center mb-6"></h3>
-                <a :href="'https://wa.me/9647706008339?text=أريد طلب عدسة ' + product.name" class="block w-full py-5 bg-[#a67c00] text-white text-center rounded-2xl font-bold shadow-lg">اطلبي الآن عبر واتساب</a>
             </div>
-        </template>
-    </main>
+        </div>
+    </div>
 
     <script>
         function peonyApp() {
             return {
-                showToast: false, toastMessage: '',
+                showModal: false,
+                selectedProduct: {},
                 products: [
-                    { name: 'أزرق الشفق', img: 'blue.png', liked: false },
-                    { name: 'روز كوارتز', img: 'rose.png', liked: false }
+                    { id: 1, name: 'أزرق رمادي', enName: 'Blue Gray', series: 'Blue Gray Series • Hydrogel', color: '#5f7d95', likes: 15, liked: false, status: 'available' },
+                    { id: 2, name: 'أزرق الشفق', enName: 'Twilight Blue', series: 'Twilight Series • Hydrogel', color: '#3b82f6', likes: 24, liked: false, status: 'available' },
+                    { id: 3, name: 'روز كوارتز', enName: 'Rose Quartz', series: 'Rose Series • Hydrogel', color: '#d44a7a', likes: 19, liked: false, status: 'available' }
                 ],
-                toggleWish(p) {
-                    p.liked = !p.liked;
-                    if(p.liked) {
-                        this.toastMessage = "اختيار ملكي يليق بجمالكِ 🌸";
-                        this.showToast = true; setTimeout(() => this.showToast = false, 3000);
-                    }
+                scrollTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); },
+                openModal(p, e) { this.selectedProduct = p; this.showModal = true; this.triggerMagic(e); },
+                like(p) { p.liked = !p.liked; p.liked ? p.likes++ : p.likes--; },
+                spawnSparkle(e) {
+                    const s = document.createElement('div');
+                    s.className = 'sparkle';
+                    s.style.left = e.pageX + 'px'; s.style.top = e.pageY + 'px';
+                    const size = Math.random() * 4 + 'px';
+                    s.style.width = size; s.style.height = size;
+                    document.body.appendChild(s);
+                    setTimeout(() => s.remove(), 1000);
                 },
-                triggerHearts(e) {
-                    for(let i=0; i<8; i++) {
-                        const h = document.createElement('div'); h.innerHTML = '❤️'; h.className = 'heart-particle';
+                triggerMagic(e) {
+                    const icons = ['❤️', '🕊️', '✨', '🌸', '🐦', '💖'];
+                    for(let i=0; i<15; i++) {
+                        const h = document.createElement('div');
+                        h.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                        h.className = 'magic-item';
                         h.style.left = e.clientX + 'px'; h.style.top = e.clientY + 'px';
-                        document.body.appendChild(h); setTimeout(() => h.remove(), 1000);
+                        h.style.setProperty('--x', (Math.random() * 400 - 200) + 'px');
+                        document.body.appendChild(h);
+                        setTimeout(() => h.remove(), 1500);
                     }
                 }
             }
