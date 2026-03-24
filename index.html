@@ -3,224 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إمبراطورية بيوني | Peony Empire Official</title>
+    <title>PEONY EMPIRE | إمبراطورية بيوني للعدسات</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;700;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
+        :root { --royal: #6b1526; --gold: #c9a84c; --accent: #d81b60; --blush: #fdf2f5; }
+        body { font-family: 'Cairo', sans-serif; background-color: #fffafb; scroll-behavior: smooth; overflow-x: hidden; }
+        .font-ruqaa { font-family: 'Aref Ruqaa', serif; }
+
+        /* --- بروتوكول "إخفاء المراجع" المطور --- */
+        .lens-media-box { position: relative; height: 320px; overflow: hidden; border-radius: 25px; background: #eee; cursor: pointer; }
+        .img-main, .img-ref { width: 100%; height: 100%; object-fit: cover; transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1); position: absolute; top:0; left:0; }
+        .img-ref { opacity: 0; transform: scale(1.1); }
+        .lens-media-box:hover .img-ref { opacity: 1; transform: scale(1); }
+        .lens-media-box:hover .img-main { opacity: 0; }
+
+        /* --- كرت المنتج الملكي --- */
+        .peony-card { background: white; border-radius: 30px; border: 1px solid rgba(216, 27, 96, 0.05); transition: 0.4s; }
+        .peony-card:hover { transform: translateY(-15px); box-shadow: 0 25px 50px rgba(107, 21, 38, 0.1); border-color: var(--accent); }
+
+        /* --- جزيئات الاحتفال عند الشراء --- */
+        .particle { position: fixed; pointer-events: none; z-index: 9999; animation: particleAnim 1.5s forwards; }
+        @keyframes particleAnim { to { transform: translate(var(--px), var(--py)) rotate(360deg); opacity: 0; } }
         [x-cloak] { display: none !important; }
-        :root { --royal-red: #801b2d; --gold: #d4af37; --lace-bg: #fffafb; --primary-pink: #f8c8d1; }
-        body { font-family: 'Amiri', serif; background-color: var(--lace-bg); color: var(--royal-red); overflow-x: hidden; }
-        .victorian-border { border: 10px solid transparent; border-image: url('https://i.ibb.co/90761d5c-89c1-4f07-addd-b543e2b7ca63/image.png') 30 round; }
-        .particle { position: fixed; pointer-events: none; z-index: 9999; animation: fly 2s linear forwards; }
-        @keyframes fly { 0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(0); opacity: 0; } }
-        .news-ticker { white-space: nowrap; animation: ticker 40s linear infinite; }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
-<body x-data="peonyApp()">
+<body x-data="peonyCore()">
 
-    <div class="bg-royal-red text-white py-2 overflow-hidden border-b-2 border-gold">
-        <div class="news-ticker flex gap-12 text-lg font-bold">
-            <span>✨ عرض الإمبراطورية: 5 عدسات بـ 75,000 د.ع مع سائل مجاني!</span>
-            <span>🌸 نظرة تأسر العالم برقة الورد وبريق الذهب</span>
-            <span>⚠️ تنبيه: لا يتم استلام أو استبدال العدسات المفتوحة نهائياً لأسباب صحية.</span>
-            <span>💎 عدسات بيوني معتمدة في 131 دولة حول العالم.</span>
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gold/20 px-6 py-4 flex justify-between items-center shadow-sm">
+        <div class="font-ruqaa text-3xl text-royal font-bold tracking-tighter">PEONY EMPIRE</div>
+        <div class="hidden md:flex gap-8 font-bold text-sm text-royal/70">
+            <a href="#hero" class="hover:text-accent transition">الرئيسية</a>
+            <a href="#quiz" class="hover:text-accent transition">مستشار الجمال</a>
+            <a href="#catalog" class="hover:text-accent transition">الـ 43 لوناً</a>
+            <a href="#warranty" class="hover:text-accent transition">الضمان الملكي</a>
         </div>
-    </div>
+        <button @click="showCart = true" class="relative bg-royal text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition">
+            <i class="fas fa-shopping-bag text-lg"></i>
+            <span x-text="cart.length" class="absolute -top-1 -right-1 bg-gold text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white"></span>
+        </button>
+    </nav>
 
-    <header class="relative bg-[url('https://i.ibb.co/90761d5c-89c1-4f07-addd-b543e2b7ca63/image.png')] bg-cover bg-center py-20 border-b-8 border-gold shadow-2xl">
-        <div class="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
-        <div class="relative z-10 container mx-auto px-4 text-center">
-            <h1 class="text-6xl md:text-8xl font-bold mb-4 text-royal-red drop-shadow-lg font-[Aref Ruqaa]">عدسات بيوني</h1>
-            <p class="text-2xl italic text-gold font-bold mb-8">Captivating Glances, Timeless Elegance</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                <div class="bg-white/90 p-5 border-2 border-gold rounded-2xl shadow-lg">
-                    <h3 class="font-bold">القطعة الواحدة</h3>
-                    <p class="text-2xl font-bold text-green-700">25,000 د.ع</p>
-                    <span class="text-xs bg-gold/20 px-2 py-1 rounded">🎁 حافظة مجانية</span>
-                </div>
-                <div class="bg-white p-6 border-4 border-royal-red rounded-2xl shadow-2xl scale-105 relative">
-                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-royal-red text-white px-4 py-1 text-xs rounded-full">الأكثر طلباً</span>
-                    <h3 class="font-bold">التوأم الساحر</h3>
-                    <p class="text-3xl font-bold text-green-700">40,000 د.ع</p>
-                    <p class="text-xs text-red-600 font-bold">توفير 10,000 دينار</p>
-                </div>
-                <div class="bg-white/90 p-5 border-2 border-gold rounded-2xl shadow-lg">
-                    <h3 class="font-bold">خماسية بيوني</h3>
-                    <p class="text-2xl font-bold text-green-700">75,000 د.ع</p>
-                    <span class="text-xs bg-red-600 text-white px-2 py-1 rounded animate-pulse">سائل مجاني 🎁</span>
-                </div>
-            </div>
+    <section id="hero" class="relative h-[70vh] flex items-center justify-center text-center px-4">
+        <div class="absolute inset-0 bg-gradient-to-b from-blush to-white -z-10"></div>
+        <div class="max-w-4xl">
+            <h1 class="font-ruqaa text-5xl md:text-8xl text-royal mb-6 leading-tight">جمالكِ يزدهر بلمسة ملكية</h1>
+            <p class="font-amiri text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed italic">بتحليل الـ Agent: أنتِ لا تشترين عدسات، أنتِ تقتنين سحراً مصمماً لملامحكِ الفريدة.</p>
+            <a href="#catalog" class="bg-royal text-white px-12 py-5 rounded-full font-black shadow-2xl hover:bg-accent transition transform hover:-translate-y-1 inline-block">تصفحي الكولكشن الكامل</a>
         </div>
-    </header>
+    </section>
 
-    <section class="container mx-auto my-12 px-4">
-        <div class="bg-white victorian-border p-8 max-w-4xl mx-auto rounded-[40px] shadow-2xl text-center">
-            <h2 class="text-4xl font-bold mb-4">🕊️ مستشار الجمال الذكي</h2>
-            <p class="mb-8 text-gray-500 italic">اكتشفي اللون الذي يعانق روحكِ (دافئ/بارد)..</p>
-            
-            <div x-show="step <= 2">
-                <div x-show="step === 1">
-                    <h4 class="text-2xl mb-6">ما هو لون عروق معصمكِ تحت الشمس؟</h4>
-                    <div class="flex flex-wrap justify-center gap-4">
-                        <button @click="quiz.tone='warm'; step++" class="px-10 py-3 bg-green-50 border-2 border-gold rounded-full hover:bg-gold hover:text-white transition">خضراء (دافئة)</button>
-                        <button @click="quiz.tone='cool'; step++" class="px-10 py-3 bg-blue-50 border-2 border-gold rounded-full hover:bg-gold hover:text-white transition">زرقاء/بنفسجية (باردة)</button>
+    <section id="quiz" class="py-24 bg-white relative overflow-hidden">
+        <div class="container mx-auto max-w-3xl px-6">
+            <div class="bg-blush rounded-[50px] p-10 md:p-16 border-4 border-dashed border-gold/30 text-center">
+                <div x-show="quizStep === 1">
+                    <span class="text-6xl mb-6 block">✨</span>
+                    <h2 class="font-ruqaa text-4xl text-royal mb-4">مستشار الجمال الذكي (Agent)</h2>
+                    <p class="text-gray-600 mb-10">دعينا نحلل ملامحكِ لنرشح لكِ "التوأم الساحر" من مجموعتنا.</p>
+                    <button @click="quizStep = 2" class="bg-royal text-white px-14 py-4 rounded-2xl font-bold text-lg">ابدئي التحليل الفوري</button>
+                </div>
+
+                <div x-show="quizStep === 2">
+                    <h3 class="text-2xl font-bold mb-8 text-royal">ما هو أندرتون بشرتكِ؟</h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <button @click="quiz.tone='warm'; quizStep = 3" class="p-8 bg-white rounded-3xl border-2 border-transparent hover:border-gold transition shadow-sm font-bold text-royal">🟡 دافئ (ذهبي)</button>
+                        <button @click="quiz.tone='cool'; quizStep = 3" class="p-8 bg-white rounded-3xl border-2 border-transparent hover:border-gold transition shadow-sm font-bold text-royal">⚪ بارد (وردي)</button>
                     </div>
                 </div>
-                <div x-show="step === 2" x-cloak>
-                    <h4 class="text-2xl mb-6">أي المجوهرات تمنحكِ إشراقاً أكبر؟</h4>
-                    <div class="flex justify-center gap-4">
-                        <button @click="calculateResult()" class="px-10 py-3 border-2 border-gold rounded-xl hover:bg-gold hover:text-white">الذهب الأصفر ✨</button>
-                        <button @click="calculateResult()" class="px-10 py-3 border-2 border-gold rounded-xl hover:bg-gold hover:text-white">الفضة 💎</button>
-                    </div>
-                </div>
-            </div>
 
-            <div x-show="step === 3" x-cloak class="py-6">
-                <h3 class="text-2xl font-bold text-green-700 mb-4">تم تحليل سحركِ بنجاح!</h3>
-                <div class="p-8 bg-gold/5 border-2 border-gold rounded-2xl inline-block">
-                    <p class="text-3xl font-bold text-royal-red mb-2" x-text="recommendation"></p>
-                    <p class="text-sm italic">بناءً على بشرتكِ، هذه الألوان ستبرز بريق عينيكِ الطبيعي.</p>
+                <div x-show="quizStep === 3" class="fade-in">
+                    <h3 class="font-ruqaa text-3xl text-royal mb-6">لقد وجد الـ Agent سحركِ!</h3>
+                    <div class="bg-white p-8 rounded-3xl border-2 border-gold mb-8 shadow-xl">
+                        <h4 class="text-2xl font-black text-accent mb-2" x-text="getQuizResult().name"></h4>
+                        <p class="text-gray-600 font-amiri text-lg" x-text="getQuizResult().reason"></p>
+                    </div>
+                    <button @click="quizStep = 1" class="text-royal underline font-bold">إعادة الاختبار</button>
                 </div>
-                <button @click="step = 1" class="block mx-auto mt-6 text-xs underline text-gray-400">إعادة الاختبار</button>
             </div>
         </div>
     </section>
 
-    <main class="container mx-auto px-4 py-10">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-            <h2 class="text-4xl font-bold border-b-4 border-gold">مجموعة تفتح البيوني (43 لوناً)</h2>
-            <input type="text" x-model="search" placeholder="ابحثي بالرقم أو الاسم..." class="p-4 w-full md:w-80 rounded-full border-4 border-primary-pink outline-none focus:border-gold transition">
+    <main id="catalog" class="container mx-auto px-6 py-24">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+            <div>
+                <h2 class="font-ruqaa text-6xl text-royal mb-2">خزانة الجمال الكاملة</h2>
+                <p class="text-gold font-bold text-lg italic">سعر موحد لجميع الموديلات: 25,000 د.ع</p>
+            </div>
+            <div class="w-full md:w-96 relative">
+                <input type="text" x-model="search" placeholder="ابحثي بالاسم أو الرقم..." class="w-full p-5 pr-14 rounded-3xl border-2 border-gold/10 focus:border-accent outline-none shadow-inner bg-white">
+                <i class="fas fa-search absolute right-6 top-1/2 -translate-y-1/2 text-gold"></i>
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
             <template x-for="p in filteredProducts()" :key="p.id">
-                <div class="bg-white p-4 rounded-[30px] shadow-lg hover:shadow-2xl transition-all group cursor-pointer border border-primary-pink/30" @click="openLens(p)">
-                    <div class="aspect-square overflow-hidden rounded-2xl relative">
-                        <img :src="p.image" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <span class="absolute top-2 right-2 bg-royal-red text-white w-10 h-10 flex items-center justify-center rounded-full font-bold shadow-lg" x-text="p.id"></span>
+                <div class="peony-card p-5 group flex flex-col">
+                    <div class="lens-media-box">
+                        <img :src="p.img1" class="img-main" alt="Natural View">
+                        <img :src="p.img2" class="img-ref" alt="Reference View">
+                        <div class="absolute top-4 left-4 bg-green-500 text-white text-[10px] px-3 py-1 rounded-full font-bold">متوفر الآن</div>
+                        <div class="absolute bottom-4 right-4 bg-black/50 text-white text-[10px] px-2 py-1 rounded backdrop-blur-md" x-text="'REF: '+p.id"></div>
                     </div>
-                    <div class="mt-4 text-center">
-                        <h3 class="text-xl font-bold text-royal-red" x-text="p.name"></h3>
-                        <p class="text-green-700 font-bold" x-text="p.price"></p>
+
+                    <div class="mt-6 flex-1 flex flex-col items-center">
+                        <h3 class="text-xl font-black text-royal mb-3" x-text="p.name"></h3>
+                        
+                        <div class="ai-badge bg-blush p-4 rounded-2xl text-[11px] text-gray-700 mb-4 border-r-4 border-gold text-right w-full leading-relaxed">
+                            <i class="fas fa-robot text-gold ml-1"></i>
+                            <strong>تحليل الـ Agent:</strong> <span x-text="p.agentNote"></span>
+                        </div>
+
+                        <div class="flex gap-2 mb-6">
+                            <span class="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-bold text-gray-500" x-text="'💧 ' + p.moist"></span>
+                            <span class="bg-gray-100 px-3 py-1 rounded-full text-[10px] font-bold text-gray-500" x-text="'📏 ' + p.dia"></span>
+                        </div>
+
+                        <div class="text-2xl font-black text-accent mb-6">25,000 د.ع</div>
+                        <button @click="addToCart(p, $event)" class="w-full bg-royal text-white py-4 rounded-2xl font-black hover:bg-gold transition shadow-xl flex items-center justify-center gap-3">
+                            <i class="fab fa-whatsapp"></i> حجز عبر واتساب
+                        </button>
                     </div>
                 </div>
             </template>
         </div>
     </main>
 
-    <section class="container mx-auto px-4 my-16">
-        <div class="bg-white p-10 rounded-[40px] shadow-xl border-t-8 border-gold">
-            <h2 class="text-3xl font-bold text-center mb-10">🛠 المواصفات الفنية والراحة الطبية</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
-                <div class="p-4 bg-pink-50 rounded-xl"><strong>النوع</strong> <br> سنوي (Annual)</div>
-                <div class="p-4 bg-pink-50 rounded-xl"><strong>المحتوى المائي</strong> <br> 42% ترطيب</div>
-                <div class="p-4 bg-pink-50 rounded-xl"><strong>القطر</strong> <br> 14.2 mm</div>
-                <div class="p-4 bg-pink-50 rounded-xl"><strong>التحدب</strong> <br> 8.6 mm</div>
-                <div class="p-4 bg-pink-50 rounded-xl"><strong>السمك</strong> <br> 0.08 mm</div>
-                <div class="p-4 bg-pink-50 rounded-xl"><strong>الحماية</strong> <br> حجب UV</div>
-            </div>
-            <div class="mt-10 flex justify-center gap-6 text-gray-400 font-bold text-xs">
-                <span>FDA Certified</span> | <span>CE Approved</span> | <span>ISO Standard</span>
+    <section id="warranty" class="py-24 bg-white px-6">
+        <div class="container mx-auto max-w-5xl">
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="bg-gray-50 p-10 rounded-[40px] border-r-8 border-accent shadow-sm">
+                    <h4 class="font-black text-2xl text-royal mb-6 flex items-center gap-3">
+                        <i class="fas fa-shield-alt text-accent"></i> الضمان الملكي
+                    </h4>
+                    <ul class="space-y-4 text-gray-600 font-bold leading-loose">
+                        <li>✅ فحص جودة دقيق قبل التغليف لضمان خلوها من العيوب.</li>
+                        <li>✅ استبدال فوري خلال 24 ساعة في حال وجود عيب مصنعي.</li>
+                        <li>✅ التوصيل الآمن والمسؤول لباب منزلكِ في جميع المحافظات.</li>
+                    </ul>
+                </div>
+                <div class="bg-blush p-10 rounded-[40px] border-r-8 border-gold shadow-sm">
+                    <h4 class="font-black text-2xl text-royal mb-6 flex items-center gap-3">
+                        <i class="fas fa-lightbulb text-gold"></i> دليل الـ Agent لاختياركِ
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed font-bold">
+                        للبشرة الحنطية، ننصح بالأخضر الزيتوني أو العسلي المخملي. لتوسيع العين، اختاري قطر 14.5mm مع حلقة تحديد ناعمة لنظرة "Doll Eye" ساحرة ومشرقة.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-white border-t-8 border-gold py-16 px-4">
-        <div class="container mx-auto max-w-4xl text-center">
-            <div class="bg-red-600 text-white p-10 rounded-[40px] shadow-2xl mb-12 transform hover:scale-105 transition">
-                <h3 class="text-4xl font-black mb-4 underline decoration-white decoration-4 italic">تنبيه ملكي هام جداً:</h3>
-                <p class="text-3xl font-extrabold leading-relaxed">
-                    قطعيــــــــاً: لا نستلم أو نستبدل أي عدسة تم فتح غلافها نهائياً.
-                </p>
-                <p class="text-lg mt-4 opacity-90">يرجى التأكد من اللون من خلف العبوة الشفافة قبل كسر الختم الصحي لضمان حقكِ.</p>
+    <div x-show="showCart" x-cloak class="fixed inset-0 z-[1000] flex justify-end">
+        <div @click="showCart = false" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col p-8">
+            <div class="flex justify-between items-center border-b pb-6 mb-8">
+                <h3 class="font-ruqaa text-3xl text-royal">سلّتكِ الملكية</h3>
+                <button @click="showCart = false" class="text-3xl text-gray-400 hover:text-royal">&times;</button>
             </div>
             
-            <a href="https://wa.me/YOUR_PHONE_NUMBER" class="bg-royal-red text-white px-12 py-5 rounded-full text-2xl font-bold shadow-2xl hover:bg-red-900 transition flex items-center justify-center gap-3 w-fit mx-auto">
-                اطلبي إطلالتكِ عبر واتساب 💬
-            </a>
-            
-            <p class="mt-12 text-gold font-bold text-2xl">إمبراطورية بيوني | Iraq 2026</p>
-        </div>
-    </footer>
+            <div class="flex-1 overflow-y-auto space-y-6">
+                <template x-for="(item, i) in cart" :key="i">
+                    <div class="flex gap-4 p-5 bg-blush rounded-3xl relative">
+                        <img :src="item.img1" class="w-20 h-20 rounded-2xl object-cover shadow-md">
+                        <div class="flex-1">
+                            <h4 class="font-black text-royal text-sm" x-text="item.name"></h4>
+                            <p class="text-accent font-black text-xs mt-1">25,000 د.ع</p>
+                        </div>
+                        <button @click="cart.splice(i, 1)" class="text-red-400">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </template>
+                <div x-show="cart.length === 0" class="text-center py-20 text-gray-400 font-amiri text-xl">سلّتكِ فارغة حالياً.. املئيها بالسحر!</div>
+            </div>
 
-    <div x-show="modal" class="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" x-cloak x-transition>
-        <div class="bg-white w-full max-w-5xl rounded-[50px] overflow-hidden relative flex flex-col md:flex-row border-4 border-gold" @click.away="modal = false">
-            <button @click="modal = false" class="absolute top-6 left-6 text-5xl text-royal-red z-50">&times;</button>
-            <div class="md:w-1/2 h-[400px] md:h-auto bg-gray-100">
-                <img :src="activeLens.image" class="w-full h-full object-cover">
-            </div>
-            <div class="md:w-1/2 p-12 flex flex-col justify-center text-right">
-                <h2 class="text-5xl font-bold mb-4 text-royal-red" x-text="activeLens.name"></h2>
-                <p class="text-gold font-bold mb-6 italic text-xl" x-text="'العدسة الملكية رقم ' + activeLens.id"></p>
-                <p class="text-xl text-gray-600 mb-8 leading-relaxed" x-text="activeLens.desc"></p>
-                <div class="flex items-center justify-between mb-10">
-                    <span class="text-4xl font-bold text-green-700" x-text="activeLens.price"></span>
-                    <span class="text-sm bg-gray-100 p-2 rounded">SKU: <span x-text="activeLens.sku"></span></span>
+            <div class="pt-8 border-t mt-auto" x-show="cart.length > 0">
+                <div class="flex justify-between text-2xl font-black mb-8 text-royal">
+                    <span>المجموع:</span>
+                    <span x-text="(cart.length * 25000).toLocaleString() + ' د.ع'"></span>
                 </div>
-                <button @click="buy($event)" class="bg-royal-red text-white py-5 rounded-2xl text-2xl font-bold shadow-xl hover:bg-red-900 transition">إضافة لسلة الجمال ✨</button>
+                
+                <div class="space-y-4 mb-6">
+                    <input type="text" x-model="form.name" placeholder="الاسم الكامل" class="w-full p-4 rounded-xl border border-gray-100 bg-gray-50 outline-none focus:border-accent">
+                    <input type="tel" x-model="form.phone" placeholder="رقم الهاتف" class="w-full p-4 rounded-xl border border-gray-100 bg-gray-50 outline-none focus:border-accent">
+                    <select x-model="form.city" class="w-full p-4 rounded-xl border border-gray-100 bg-gray-50 outline-none focus:border-accent">
+                        <option value="بغداد">بغداد</option>
+                        <option value="البصرة">البصرة</option>
+                        <option value="كربلاء">كربلاء</option>
+                        <option value="أخرى">محافظة أخرى</option>
+                    </select>
+                </div>
+
+                <button @click="sendOrder()" class="w-full bg-green-600 text-white py-5 rounded-2xl font-black text-xl hover:bg-green-700 transition flex items-center justify-center gap-3 shadow-xl">
+                    <i class="fab fa-whatsapp text-2xl"></i> إتمام الطلب الملكي
+                </button>
             </div>
         </div>
     </div>
 
+    <footer class="bg-white py-16 px-6 border-t-8 border-gold text-center">
+        <h2 class="font-ruqaa text-3xl text-royal mb-6 tracking-widest">PEONY EMPIRE</h2>
+        <p class="text-gray-400 text-sm mb-10 leading-relaxed font-bold italic max-w-2xl mx-auto">
+            * تنبيه الـ Agent: يرجى فحص العدسة وهي داخل العلبة الزجاجية قبل فتح الختم لضمان حق الاستبدال. جميع الحقوق محفوظة لعام 2026.
+        </p>
+    </footer>
+
     <script>
-        function peonyApp() {
+        function peonyCore() {
             return {
                 search: '',
-                step: 1,
-                modal: false,
-                activeLens: {},
+                showCart: false,
+                quizStep: 1,
                 quiz: { tone: '' },
-                recommendation: '',
-                // قاعدة بيانات الـ 43 عدسة الكاملة
-                products: [
-                    { id: 1, name: 'أوكر (Ocre)', sku: 'SB230921', price: '25,000 د.ع', image: 'img1.jpg', desc: 'لون عسلي باهت طبيعي يذوب في العين بسلاسة.' },
-                    { id: 33, name: 'رمادي لؤلؤي (Pearl Grey)', sku: 'SB23092687', price: '25,000 د.ع', image: 'img33.jpg', desc: 'لمعة لؤلؤية صافية تجعل العين كقطعة كريستال.' },
-                    { id: 34, name: 'عسلي مضيء (Bright Hazel)', sku: 'SB24062006', price: '25,000 د.ع', image: 'img34.jpg', desc: 'إشراقة الشمس الدافئة في كل نظرة.' },
-                    { id: 43, name: 'كريستال بيوني (Pure Crystal)', sku: 'SB23103197', price: '25,000 د.ع', image: 'img43.jpg', desc: 'نقاء زجاجي مطلق، مسك ختام مجموعتنا الفاخرة.' }
-                    // يمكن إضافة بقية الـ 43 هنا
+                cart: [],
+                form: { name: '', phone: '', city: 'بغداد' },
+                
+                // قاعدة بيانات الـ 43 عدسة المجردة (النموذج الكامل)
+                lenses: [
+                    { id: 43, name: 'رمادي الألماس - Diamond Gray', img1: 'lens43_view.jpg', img2: 'lens43_ref.jpg', dia: '14.5mm', moist: '38%', agentNote: 'اللون الأكثر بريقاً للمناسبات المسائية مع تأثير Doll Eye ساحر.' },
+                    { id: 38, name: 'الأخضر الزيتوني - Olive', img1: 'lens38_view.jpg', img2: 'lens38_ref.jpg', dia: '14.0mm', moist: '42%', agentNote: 'الخيار الطبيعي الأول للاستخدام اليومي بفضل نفاذية الأكسجين العالية.' },
+                    { id: 24, name: 'أزرق التوباز - Topaz Blue', img1: 'lens24_view.jpg', img2: 'lens24_ref.jpg', dia: '14.5mm', moist: '40%', agentNote: 'مادة الـ Hydrogel المتطورة تضمن رطوبة مثالية لعينكِ حتى 12 ساعة.' },
+                    { id: 1, name: 'عسلي ملكي - Royal Hazel', img1: 'lens1_view.jpg', img2: 'lens1_ref.jpg', dia: '14.2mm', moist: '38%', agentNote: 'يمنح العين دفئاً طبيعياً يذوب مع اللون الأصلي للعين بشكل مذهل.' },
+                    // ... استمري بإضافة الـ 43 عدسة هنا بنفس النمط
                 ],
 
                 filteredProducts() {
-                    return this.products.filter(p => p.name.includes(this.search) || p.id.toString() === this.search);
+                    return this.lenses.filter(l => 
+                        l.name.toLowerCase().includes(this.search.toLowerCase()) || 
+                        l.id.toString().includes(this.search)
+                    );
                 },
 
-                openLens(p) {
-                    this.activeLens = p;
-                    this.modal = true;
+                getQuizResult() {
+                    if(this.quiz.tone === 'warm') return { name: 'عسلي ملكي (#1)', reason: 'الأندرتون الدافئ يبرز بجمالية مذهلة مع التدرجات الذهبية والعسلية التي اخترناها لكِ.' };
+                    return { name: 'رمادي الألماس (#43)', reason: 'البشرة الباردة تمنح الرمادي الكريستالي عمقاً ساحراً ونقاءً لا يضاهى في الملامح.' };
                 },
 
-                calculateResult() {
-                    this.recommendation = (this.quiz.tone === 'warm') ? "أوكر (1) أو عسلي مضيء (34)" : "رمادي لؤلؤي (33) أو كريستال (43)";
-                    this.step = 3;
-                    this.triggerMagic({ clientX: window.innerWidth/2, clientY: window.innerHeight/2 });
+                addToCart(p, e) {
+                    this.cart.push(p);
+                    this.spawnParticles(e);
                 },
 
-                buy(e) {
-                    this.triggerMagic(e);
-                    alert("تمت الإضافة للسلة بنجاح! تذكري أن العدسات المفتوحة لا تستبدل أيتها الملكة.");
-                },
-
-                triggerMagic(e) {
-                    const icons = ['🌸', '🕊️', '🦋', '✨', '💎'];
-                    for (let i = 0; i < 30; i++) {
+                spawnParticles(e) {
+                    for (let i = 0; i < 15; i++) {
                         const p = document.createElement('div');
                         p.className = 'particle';
-                        p.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                        p.innerHTML = ['🌸', '✨', '💖', '💎'][Math.floor(Math.random()*4)];
                         p.style.left = e.clientX + 'px';
                         p.style.top = e.clientY + 'px';
-                        p.style.fontSize = Math.random() * 20 + 20 + 'px';
-                        const x = (Math.random() - 0.5) * 600;
-                        const y = (Math.random() - 0.5) * 600;
-                        p.style.setProperty('--x', `${x}px`);
-                        p.style.setProperty('--y', `${y}px`);
-                        p.style.setProperty('--r', `${Math.random() * 720}deg`);
+                        p.style.setProperty('--px', (Math.random()-0.5)*400 + 'px');
+                        p.style.setProperty('--py', (Math.random()-0.5)*400 + 'px');
                         document.body.appendChild(p);
-                        setTimeout(() => p.remove(), 2000);
+                        setTimeout(() => p.remove(), 1500);
                     }
+                },
+
+                sendOrder() {
+                    if(!this.form.name || !this.form.phone) { alert('يرجى ملء البيانات الملكية!'); return; }
+                    let msg = `🌸 طلب جديد من إمبراطورية بيوني 🌸\n\n`;
+                    this.cart.forEach((item, i) => msg += `${i+1}. ${item.name} (REF: ${item.id})\n`);
+                    msg += `\n👤 الاسم: ${this.form.name}\n📞 الهاتف: ${this.form.phone}\n📍 المدينة: ${this.form.city}\n💰 المجموع: ${this.cart.length * 25000} د.ع\n\nتم الطلب عبر الموقع الرسمي 2026`;
+                    window.open(`https://wa.me/9647706008339?text=${encodeURIComponent(msg)}`, '_blank');
                 }
             }
         }
